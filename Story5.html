@@ -1,0 +1,480 @@
+<html>
+<!-- this is nearly identical to page 1 with minor differnces, see page 1 for all comments not related to differences -->
+  <head>
+    <script src="https://rawgithub.com/craftyjs/Crafty/release/dist/crafty-min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+      html{
+        background-color: rgb(0,0,0)
+      }
+      .button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 16px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 64px;
+        margin: 0;
+        position: relative;
+        top: 100px;
+        left: 50%;
+        -ms-transform: translate(-50%,-50%);
+        transform: translate(-50%,-50%);
+        -webkit-transition-duration: 0.4s; /* Safari */
+        transition-duration: 0.4s;
+        cursor: pointer;
+
+      }
+      .playbutton {
+        background-color: #f44336;
+        color: white;
+        border: 2px solid #f44336;
+      }
+
+      .playbutton:hover {
+        background-color: white;
+        color: black;
+      }
+
+      .vid{
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+
+      }
+
+      .music{
+        position: absolute;
+        top: 115%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+
+      }
+
+    </style>
+  </head>
+  <body>
+    <p> made by Alexander Plossl </p>
+    <div class = "vid" id = "target">
+      <video width="960" height="540" controls>
+        <source src="vid5.mp4" type="video/mp4">
+        <source src="vid1.ogg" type="video/ogg">
+      Your browser does not support the video tag.
+      </video>
+      <input type="button"  value="Run for it" class="button playbutton"/>
+    </div>
+    <script>
+      $(document).ready(()=>{
+        $(".playbutton").click(()=>{
+            $(".vid").remove();
+            Crafty.init();
+            Crafty.audio.play("Theme",-1);
+            Crafty.defineScene("one", () => {
+              //the exit is now the front door
+              ult(680,0,300,90)
+
+              floor(100,174,1324,450,"#d3d3d3",0)
+              floor(590,90,338,500,"#d3d3d3",0)
+              floor(690,50,148,50,"#d3d3d3",0)
+              floor(595,345,400,210,"white",0)
+
+
+              wall(100,174,10,450)
+              wall(100,174,500,10)
+              wall(928,174,500,10)
+              wall(1418,174,10,450)
+              wall(590,90,10,200)
+              wall(590,90,100,10)
+              wall(838,90,100,10)
+              wall(928,90,10,200)
+              wall(100,615,1328,10)
+
+              wall(590,280,250,10)
+              wall(928,280,150,10)
+              wall(1128,280,144,10)
+              wall(1168,174,10,116)
+              wall(1312,330,10,55)
+              wall(1312,380,110,10)
+
+              wall(1312,440,10,185)
+              wall(1202,509,115,10)
+              wall(1052,509,105,10)
+              wall(1052,509,10,116)
+
+              wall(340,340,900,10)
+              wall(1190,340,70,10)
+              wall(1250,340,10,119)
+              wall(992,340,10,225)
+              wall(992,449,110,10)
+              wall(1152,449,105,10)
+              wall(590,555,412,10)
+              wall(590,340,10,225)
+
+              wall(340,234,10,331)
+              wall(400,400,10,225)
+              wall(400,400,140,10)
+              wall(280,435,10,130)
+              wall(100,435,185,10)
+              wall(530,400,10,165)
+
+              wall(160,375,125,10)
+              wall(160,234,10,146)
+              wall(220,234,125,10)
+              wall(400,174,10,116)
+              wall(400,280,130,10)
+
+              wall(830,280,10,65)
+
+              //the exit has been moved so a floor has been used to substitute for the vault door. The timer starts above
+              //the maximum so it wont flash
+              floor(780,335,50,15,"green",100)
+              dollar()
+
+              //there are more guards. An additional variable has been added so guards can start in any part of their cycle
+              moveDeath(620,120,0,0)
+              moveDeath(870,300,1,0)
+              moveDeath(1010,575,2,0)
+              moveDeath(300,575,3,0)
+              moveDeath(360,300,4,0)
+              moveDeath(195,260,5,0)
+              moveDeath(425,425,6,0)
+              moveDeath(1100,470,1,3)
+              moveDeath(820,220,0,2)
+
+
+
+            });
+
+            Crafty.enterScene("one");
+            let player = Crafty.e("Player, DOM, Persist, 2D, Fourway, Collision, player, Color")
+            .attr({x: 780, y: 300, w: 32, h: 32})
+            .color("#313639")
+            .fourway(200)
+            //this stops working with es6 so im leaving es5
+            .bind('Move', function(evt) { // after player moved
+              console.log(player.x + " " + player.y)
+              let hitDatas, hitData;
+              if ((hitDatas = this.hit('wall'))) { // check for collision with walls
+                hitData = hitDatas[0]; // resolving collision for just one collider
+                if (hitData.type === 'SAT') { // SAT, advanced collision resolution
+                  // move player back by amount of overlap
+                  this.x -= hitData.overlap * hitData.nx;
+                  this.y -= hitData.overlap * hitData.ny;
+                } else { // MBR, simple collision resolution
+                  // move player to previous position
+                  this.x = evt._x;
+                  this.y = evt._y;
+                }
+              }
+            });
+
+            function dollar(){
+              dol = Crafty.e('Text, 2D, DOM')
+              .attr({x: 760, y: 400 })
+              .text("$")
+              .textFont({ size: '100px', weight: 'bold' })
+              .textColor('#85bb65');
+            }
+            function ult(xp,yp,wp,hp){
+               let ent = Crafty.e("2D, DOM, Color, Collision")
+               .attr({x: xp, y: yp, w: wp, h: hp})
+               .color("black")
+               .checkHits('Player')
+               .bind("HitOn", () =>{
+                 window.location.href = "Story6.html"
+               });
+            }
+            function moveDeath(xp,yp,num,pos){
+              mdead = Crafty.e('MDeath, 2D, DOM, Color, Collision')
+              .attr({x: xp, y: yp, w: 32, h: 32})
+              .checkHits('Player')
+              .bind("HitOn", () =>{
+                player.x = 780
+                player.y = 300
+              })
+              // this also breaks, I think it has something to do with the bind function
+              .bind("EnterFrame", function() {
+                if(num == 0){
+                  if(pos==0){
+                    if(this.x>860){
+                      pos=1;
+                    } else{
+                      this.x+=5;
+                    }
+                  } else if(pos==3){
+                    if(this.y<125){
+                      pos=0;
+                    } else{
+                      this.y-=5;
+                    }
+                  }else if(pos==1){
+                    if(this.y>220){
+                      pos=2;
+                    } else{
+                      this.y+=5;
+                    }
+                  }else{
+                    if(this.x<630){
+                      pos=3;
+                    } else{
+                      this.x-=5;
+                    }
+                  }
+                }
+
+                if(num == 1){
+                  if(pos==0){
+                    if(this.x>1265){
+                      pos=1;
+                    } else{
+                      this.x+=5;
+                    }
+                  } else if(pos==4){
+                    if(this.y<300){
+                      pos=5;
+                    } else{
+                      this.y-=5;
+                    }
+                  }else if(pos==1){
+                    if(this.y>465){
+                      pos=2;
+                    } else{
+                      this.y+=5;
+                    }
+                  }else if(pos==3){
+                    if(this.x>1265){
+                      pos=4;
+                    } else{
+                      this.x+=5;
+                    }
+                  }else if (pos==5){
+                    if(this.x<870){
+                      pos=0;
+                    } else{
+                      this.x-=5;
+                    }
+                  }else{
+                    if(this.x<1015){
+                      pos=3;
+                    } else{
+                      this.x-=5;
+                    }
+                  }
+                }
+
+                if(num==2){
+                  if (pos==0){
+                    if(this.x<550){
+                      pos=1;
+                    } else{
+                      this.x-=5;
+                    }
+                  }else if (pos==1){
+                    if(this.y<360){
+                      pos=2;
+                    } else{
+                      this.y-=5;
+                    }
+                  }else if (pos==2){
+                    if(this.x<360){
+                      pos=3;
+                    } else{
+                      this.x-=5;
+                    }
+                  }else if (pos==3){
+                    if(this.y>570){
+                      pos=4;
+                    } else{
+                      this.y+=5;
+                    }
+                  }else if (pos==4){
+                    if(this.y<360){
+                      pos=5;
+                    } else{
+                      this.y-=5;
+                    }
+                  }else if (pos==5){
+                    if(this.x>550){
+                      pos=6;
+                    } else{
+                      this.x+=5;
+                    }
+                  }else if (pos==6){
+                    if(this.y>570){
+                      pos=7;
+                    } else{
+                      this.y+=5;
+                    }
+                  }else if (pos==7){
+                    if(this.x>1010){
+                      pos=0;
+                    } else{
+                      this.x+=5;
+                    }
+                  }
+                }
+
+                if(num==3){
+                  if (pos==0){
+                    if(this.y<400){
+                      pos=1;
+                    } else{
+                      this.y-=5;
+                    }
+                  }else if (pos==1){
+                    if(this.x<125){
+                      pos=2;
+                    } else{
+                      this.x-=5;
+                    }
+                  }else if (pos==2){
+                    if(this.y<200){
+                      pos=3;
+                    } else{
+                      this.y-=5;
+                    }
+                  }else if (pos==3){
+                    if(this.x>355){
+                      pos=4;
+                    } else{
+                      this.x+=5;
+                    }
+                  }else if (pos==4){
+                    if(this.x<125){
+                      pos=5;
+                    } else{
+                      this.x-=5;
+                    }
+                  }else if (pos==5){
+                    if(this.y>390){
+                      pos=6;
+                    } else{
+                      this.y+=5;
+                    }
+                  }else if (pos==6){
+                    if(this.x>295){
+                      pos=7;
+                    } else{
+                      this.x+=5;
+                    }
+                  }else if (pos==7){
+                    if(this.y>570){
+                      pos=0;
+                    } else{
+                      this.y+=5;
+                    }
+                  }
+                }
+
+                if(num==4){
+                  if (pos==0){
+                    if(this.x>700){
+                      pos=1;
+                    } else{
+                      this.x+=5;
+                    }
+                  }else if (pos==1){
+                    if(this.x<355){
+                      pos=0;
+                    } else{
+                      this.x-=5;
+                    }
+                  }
+                }
+                if(num == 5){
+                  if(pos==0){
+                    if(this.x>285){
+                      pos=1;
+                    } else{
+                      this.x+=5;
+                    }
+                  } else if(pos==3){
+                    if(this.y<260){
+                      pos=0;
+                    } else{
+                      this.y-=5;
+                    }
+                  }else if(pos==1){
+                    if(this.y>325){
+                      pos=2;
+                    } else{
+                      this.y+=5;
+                    }
+                  }else{
+                    if(this.x<195){
+                      pos=3;
+                    } else{
+                      this.x-=5;
+                    }
+                  }
+                }
+                if(num == 6){
+                  if(pos==0){
+                    if(this.x>475){
+                      pos=1;
+                    } else{
+                      this.x+=5;
+                    }
+                  } else if(pos==3){
+                    if(this.y<430){
+                      pos=0;
+                    } else{
+                      this.y-=5;
+                    }
+                  }else if(pos==1){
+                    if(this.y>565){
+                      pos=2;
+                    } else{
+                      this.y+=5;
+                    }
+                  }else{
+                    if(this.x<430){
+                      pos=3;
+                    } else{
+                      this.x-=5;
+                    }
+                  }
+                }
+              })
+              .color('blue');
+            }
+
+
+            function wall(xp,yp,wp,hp){
+              walls = Crafty.e('wall, 2D, DOM, Color, Collision')
+              .attr({x: xp, y: yp, w: wp, h: hp})
+              .color('grey');
+            }
+
+            //each floor acts on its own timer, changing between red and its origonal color to emulate flashing lights
+            function floor(xp,yp,wp,hp,colors,i){
+              floors = Crafty.e('floor, 2D, DOM, Color')
+              .attr({x: xp, y: yp, w: wp, h: hp})
+              .color(colors)
+              .bind("EnterFrame", function() {
+                i++
+                if(i==20){
+                  this.color("red")
+                }else if(i==40){
+                  i=0;
+                  this.color(colors)
+                }
+              });
+            }
+
+        });
+      });
+
+      //sound is now alarms
+      Crafty.audio.add("Theme","alarm.mp3");
+
+
+
+    </script>
+  </body>
+</html>

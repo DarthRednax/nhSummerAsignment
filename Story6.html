@@ -1,0 +1,182 @@
+<html>
+  <!-- the html and css are the same as the first page so refer to them for comments -->
+  <head>
+    <script src="https://rawgithub.com/craftyjs/Crafty/release/dist/crafty-min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+      html{
+        background-color: rgb(0,0,0)
+      }
+      .button {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 16px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 64px;
+        margin: 0;
+        position: relative;
+        top: 100px;
+        left: 50%;
+        -ms-transform: translate(-50%,-50%);
+        transform: translate(-50%,-50%);
+        -webkit-transition-duration: 0.4s; /* Safari */
+        transition-duration: 0.4s;
+        cursor: pointer;
+
+      }
+      .playbutton {
+        background-color: #f44336;
+        color: white;
+        border: 2px solid #f44336;
+      }
+
+      .playbutton:hover {
+        background-color: white;
+        color: black;
+      }
+
+      .vid{
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+
+      }
+
+      .music{
+        position: absolute;
+        top: 115%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+
+      }
+
+    </style>
+  </head>
+  <body>
+    <p> made by Alexander Plossl </p>
+    <div class = "vid" id = "target">
+      <video width="960" height="540" controls>
+        <source src="vid6.mp4" type="video/mp4">
+        <source src="vid1.ogg" type="video/ogg">
+      Your browser does not support the video tag.
+      </video>
+      <input type="button"  value="Escape" class="button playbutton"/>
+    </div>
+    <script>
+      $(document).ready(()=>{
+        $(".playbutton").click(()=>{
+            $(".vid").remove();
+            Crafty.init();
+            Crafty.audio.play("Theme",-1);
+            Crafty.defineScene("one", () => {
+
+              //repurposing code, this time the "floors" are road strips
+              floor(-100,10,2000,10)
+
+              floor(-100,210,2000,10)
+
+              floor(-100,410,2000,10)
+
+              floor(-100,610,2000,10)
+
+              //creates the timer
+              timer()
+
+
+
+            });
+
+            Crafty.enterScene("one");
+
+            //the players movment has been changed so you can only move between 3 strips and only in jumps
+            let player = Crafty.e("Player, DOM, Persist, 2D, Collision, player, Color")
+            .attr({x: 100, y: 40, w: 400, h: 150})
+            .color("orange")
+            //this stops working with es6 so im leaving es5
+            .bind('KeyDown', function(e) {
+              //up arrow goes up, down arrow goes down. Stops you from going off the screen
+              if(e.key == Crafty.keys.UP_ARROW&&pos!=-1) {
+                this.y = this.y-200;
+                pos--;
+              } else if (e.key == Crafty.keys.DOWN_ARROW&&pos!=1) {
+                this.y = this.y+200;
+                pos++;
+              }
+            });
+
+            //uses the frames to time you
+            function timer(){
+              dol = Crafty.e('Text, 2D, DOM')
+              .attr({x: 1200, y: 10 })
+              .text(count+"")
+              .textFont({ size: '100px', weight: 'bold' })
+              .textColor('white')
+              .bind("EnterFrame", function() {
+                count-=1;
+                if(count<=00){
+                  console.log("done");
+                  window.location.href = "Story7.html"
+                }
+                this.text(count+"")
+              });
+            }
+
+            //similarly repurposed, now they spawn to the right and only go left.
+            function moveDeath(xp,yp){
+              mdead = Crafty.e('MDeath, 2D, DOM, Color, Collision')
+              .attr({x: xp, y: yp, w: 30, h: 150})
+              .checkHits('Player')
+              .bind("HitOn", function(){
+                //getting hit adds 300 frames to your timer
+                count= Math.min(count+300,2000);
+                this.destroy();
+              })
+              // this also breaks, I think it has something to do with the bind function
+              .bind("EnterFrame", function() {
+                this.x-=13;
+              })
+              .color('grey');
+            }
+
+            function floor(xp,yp,wp,hp,colors){
+              floors = Crafty.e('floor, 2D, DOM, Color')
+              .attr({x: xp, y: yp, w: wp, h: hp})
+              .color("white");
+            }
+
+            //spawns the blocks to the right
+            function spawn(){
+              for(let i =0;i<2;i++){
+                //spawns two with the possibily of both being in the same spot
+                switch(Math.floor(Math.random()*3)) {
+                  case 0:
+                    moveDeath(2000,40)
+                    break;
+                  case 1:
+                    moveDeath(2000,240)
+                    break;
+                  case 2:
+                    moveDeath(2000,440)
+                    break;
+                }
+              }
+              //recurcive spawning
+              setTimeout(()=>{spawn()}, 1000);
+            }
+            spawn();
+        });
+      });
+      //sets the default count and position
+      let count = 2000;
+      let pos = -1
+      //audio is sirens
+      Crafty.audio.add("Theme","siren.mp3");
+    </script>
+  </body>
+</html>

@@ -1,0 +1,73 @@
+<<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <!-- import jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+      html{
+        background-color: rgb(0,0,0)
+      }
+      /* sets a base style for both numbers */
+      .num {
+        font-size: 50px;
+        position: absolute;
+        top: 5%;
+        color:white;
+      }
+      /* defines unique locations for each number */
+      .money{
+        left: 5%;
+      }
+      .time{
+        right: 5%;
+      }
+      /* sets the base style and location of the bill */
+      img{
+        width: 200px;
+        position:absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
+    </style>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <!-- creates the bill and the two counters -->
+    <p class = "money num">0</p>
+    <p class = "time num">60</p>
+    <img src="bill.jpg">
+    <script>
+      // they start with 0 dollars and 60 seconds on the clock
+      let money = 0;
+      let time = 60;
+
+      //a simple timer which counts down every second
+      let timer = () => {
+        //at time = 0 they go to the next page
+        if(time <=0){
+          window.location.href = "Story5.html"
+        }
+        time--;
+        //the counter on screen is set to the correct time
+        $(".time").html(""+time)
+        //the timer is iterated every second
+        setTimeout(()=>{timer()}, 1000);
+      }
+
+      //starts the timer function
+      setTimeout(()=>{timer()}, 1000);
+
+      //when you click on the bill it raises the count by 1 and goes to a random location
+      $("img").click(()=>{
+          money++;
+          $(".money").html(""+money)
+          //this stops it from going partially off screen
+          $("img").css("top",10+Math.random()*80+"%")
+          $("img").css("left",10+Math.random()*80+"%")
+      });
+    </script>
+  </body>
+</html>

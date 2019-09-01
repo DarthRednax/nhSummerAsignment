@@ -1,0 +1,180 @@
+<<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+      html{
+        background-color: rgb(0,0,0)
+      }
+      /* css to stylize to buttons and lights */
+
+      div {
+        width: 300px;
+        height: 100px;
+        position: absolute;
+        top: 20%;
+        background-color:#DCDCDC;
+
+      }
+      button {
+        width: 300px;
+        height: 100px;
+        position: absolute;
+        top: 60%;
+        border: none;
+        padding: 16px 32px;
+        margin: 0;
+        background-color:#DCDCDC;
+
+      }
+      .blue{
+        left: 20%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
+      button.blue:hover {
+        background-color: blue;
+      }
+      .red{
+        left: 40%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
+      button.red:hover {
+        background-color: red;
+      }
+      .green{
+        left: 60%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
+      button.green:hover {
+        background-color: green;
+      }
+      .yellow{
+        left: 80%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
+      button.yellow:hover {
+        background-color: yellow;
+      }
+    </style>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <!-- creates lights -->
+    <div class = "red"></div>
+    <div class = "blue"></div>
+    <div class = "green"></div>
+    <div class = "yellow"></div>
+    <!-- creates buttons -->
+    <button class = "red"></button>
+    <button class = "blue"></button>
+    <button class = "green"></button>
+    <button class = "yellow"></button>
+    <script>
+      //variable to stop player action while colors are being displayed
+      let playing = true;
+
+      //global order of the colors
+      let order = {};
+
+      //where they are in their guesses
+      let curnum = 0;
+      let src = () => {
+        //creates a 10 long order
+        for(i=0;i<10;i++){
+          switch(Math.floor(Math.random()*4)) {
+            case 0:
+              order[i]="red";
+              break;
+            case 1:
+              order[i]="green";
+              break;
+            case 2:
+              order[i]="blue";
+              break;
+            case 3:
+              order[i]="yellow";
+              break;
+          }
+        }
+        display(0);
+      }
+      //display turns to lights to the right color
+      let display = ( number) =>{
+        $("div."+order[number]).css("background-color", order[number])
+        console.log(order[number]);
+        setTimeout(()=>{undisplay(number)}, 1000);
+      }
+      //undisplay turns them back. These two itterate through all 10
+      let undisplay = (number) => {
+        $("div."+order[number]).removeAttr('style');
+        if(number+1<10){setTimeout(()=>{display(number+1)}, 100);}
+        else {playing = false;}
+      }
+
+      //starts the simon says 3 seconds after the page loads
+      setTimeout(()=>{src()}, 3000);
+
+      //manages the buttons
+      $("button.red").click(()=>{
+        //buttons do nothing when lights are shown
+
+        //verifys the right button is pressed. If it is then it moves onto the next color. Otherwise it starts a new pattern
+        if(playing == false && order[curnum] == "red"){
+          if(curnum == 9) window.location.href = "Story4.html"
+          curnum++
+        } else if(playing == false){
+          $("html").css("background-color","red");
+          setTimeout(()=>{$("html").removeAttr('style');}, 500);
+          playing = true;
+          curnum = 0;
+          setTimeout(()=>{src()}, 3000);
+        }
+      });
+
+      $("button.blue").click(()=>{
+          if(playing == false && order[curnum] == "blue"){
+            if(curnum == 9) window.location.href = "Story4.html"
+            curnum++
+          } else if(playing == false){
+            $("html").css("background-color","red");
+            setTimeout(()=>{$("html").removeAttr('style');}, 500);
+            playing = true;
+            curnum = 0;
+            setTimeout(()=>{src()}, 3000);
+          }
+      });
+
+      $("button.yellow").click(()=>{
+          if(playing == false && order[curnum] == "yellow"){
+            if(curnum == 9) window.location.href = "Story4.html"
+            curnum++
+          } else if(playing == false){
+            $("html").css("background-color","red");
+            setTimeout(()=>{$("html").removeAttr('style');}, 500);
+            playing = true;
+            curnum = 0;
+            setTimeout(()=>{src()}, 3000);
+          }
+      });
+
+      $("button.green").click(()=>{
+          if(playing == false && order[curnum] == "green"){
+            if(curnum == 9) window.location.href = "Story4.html"
+            curnum++
+          } else if(playing == false){
+            $("html").css("background-color","red");
+            setTimeout(()=>{$("html").removeAttr('style');}, 500);
+            playing = true;
+            curnum = 0;
+            setTimeout(()=>{src()}, 3000);
+          }
+      });
+
+    </script>
+  </body>
+</html>
