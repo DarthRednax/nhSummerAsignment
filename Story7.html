@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<!-- just a webpage sized image -->
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body, html {
+        height: 100%;
+        margin: 0;
+      }
+
+      .bg {
+        /* The image is far wider then is needed so strange aspect ratios still display the full height of the image */
+        background-image: url("win.png");
+
+        /* Full height */
+        height: 100%;
+
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="bg"></div>
+
+
+  </body>
+</html>
